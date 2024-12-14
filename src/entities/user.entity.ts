@@ -1,13 +1,15 @@
-import {
-  Column,
-  DataType,
-  Default,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
+import { Column, DataType, Default, DefaultScope, ForeignKey, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
+import { Office } from './office.entity';
 
 @Table({ modelName: 'user', tableName: 'user' })
+@DefaultScope(() => {
+  return {
+    attributes: { exclude: ['password'] },
+  };
+})
+@Scopes(() => ({
+  login: {},
+}))
 export class User extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
@@ -25,4 +27,8 @@ export class User extends Model {
 
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
+
+  @ForeignKey(() => Office)
+  @Column({ allowNull: false, field: 'default_office_id' })
+  defaultOfficeId: string;
 }

@@ -1,11 +1,4 @@
-import {
-  Column,
-  DataType,
-  Default,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
+import { Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table({ modelName: 'office', tableName: 'office' })
 export class Office extends Model {

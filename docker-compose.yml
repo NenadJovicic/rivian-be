@@ -1,0 +1,63 @@
+services:
+  rivian-nginx:
+    image: nginx:latest
+    container_name: rivian-nginx
+    ports:
+      - "4444:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - 'rivian-be'
+      # - 'rivian-fe'
+
+  rivian-be:
+    image: nenad-jovicic/rivian-be
+    container_name: rivian-be
+    build:
+      context: ./.docker
+      dockerfile: ./app.Dockerfile
+    ports:
+      - '9221:9221'
+    volumes:
+      - ./:/home/app
+    expose:
+      - '3000'
+    environment:
+      DB_CONNECTION: postgres
+      DB_HOST: rivian-db
+      POSTGRES_USER: rivian
+      POSTGRES_PASSWORD: rivian-password
+      POSTGRES_DB: rivian
+      JWT_SECRET: rivian-secret
+      REFRESH_TOKEN_EXP: '90 days'
+      TOKEN_EXP: '300s'
+      DB_PORT: 5432
+
+  rivian-db:
+    image: postgres:14
+    container_name: rivian-db
+    restart: always
+    expose:
+      - '5432'
+    ports:
+      - '10101:5432'
+    environment:
+      POSTGRES_PASSWORD: rivian-password
+      POSTGRES_USER: rivian
+      POSTGRES_DB: rivian
+
+  # rivian-fe:
+  #   image: nenad-jovicic/rivian-fe
+  #   container_name: rivian-fe
+  #   build:
+  #     context: ../rivian-fe
+  #     dockerfile: ./nginx/Dockerfile
+  #   volumes:
+  #     # We need to map the full frontend directory. Else if a FE dev re-runs the build command the www folder will be deleted and nginx can't handle the deletion of the whole "main" folder.
+  #     # It will crash and return a "500 - internal error" response. So the dev will need to stop the komed-frontend docker container and then re-start it. To work around this issue we just
+  #     # use the whole folder in the volume so when a FE dev re-runs the build (and deletes the www folder) then the "main" folder isn't destroyed in the docker container and continue to runs normally.
+  #     - ../rivian-fe:/usr/share/nginx
+  #   expose:
+  #     - '8080'

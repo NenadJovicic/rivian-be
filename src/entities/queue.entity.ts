@@ -1,14 +1,6 @@
-import {
-  Column,
-  DataType,
-  Default,
-  ForeignKey,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
-import { User } from './user.entity';
+import { Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { Office } from './office.entity';
+import { User } from './user.entity';
 
 @Table({
   modelName: 'queue',
