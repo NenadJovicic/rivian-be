@@ -32,7 +32,7 @@ services:
       POSTGRES_DB: rivian
       JWT_SECRET: rivian-secret
       REFRESH_TOKEN_EXP: '90 days'
-      TOKEN_EXP: '300s'
+      TOKEN_EXP: '6000s'
       DB_PORT: 5432
 
   rivian-db:
