@@ -42,7 +42,7 @@ services:
     expose:
       - '5432'
     ports:
-      - '10101:5432'
+      - '12345:5432'
     environment:
       POSTGRES_PASSWORD: rivian-password
       POSTGRES_USER: rivian

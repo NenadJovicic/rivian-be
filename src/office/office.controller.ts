@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { OfficeValidator } from '../dto/office.validator';
 import { Office } from '../entities/office.entity';
+import { OfficeValidator } from '../validators/office.validator';
 
 @Controller('office')
 export class OfficeController {

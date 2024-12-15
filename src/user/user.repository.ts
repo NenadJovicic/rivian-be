@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserValidator } from '../dto/user.validator';
 import { User } from '../entities/user.entity';
+import { UserValidator } from '../validators/user.validator';
 
 @Injectable()
 export class UserRepository {

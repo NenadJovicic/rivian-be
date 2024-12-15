@@ -1,12 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
+import { APP_PIPE } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
+import { ChargingSpotModule } from './charging-spot/charging-spot.module';
 import { OfficeModule } from './office/office.module';
 import { UserModule } from './user/user.module';
-import { APP_PIPE } from '@nestjs/core';
 
-const modules = [AuthModule, UserModule, OfficeModule];
+const modules = [AuthModule, UserModule, OfficeModule, ChargingSpotModule];
 @Module({
   imports: [
     SequelizeModule.forRoot({

@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { hash } from 'bcrypt';
 import { UserDto } from '../dto/user.dto';
-import { UserValidator } from '../dto/user.validator';
+import { UserValidator } from '../validators/user.validator';
 import { UserRepository } from './user.repository';
 
 @Controller('user')
