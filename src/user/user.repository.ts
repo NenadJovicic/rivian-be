@@ -11,4 +11,8 @@ export class UserRepository {
   async saveUser(user: UserValidator): Promise<User> {
     return User.create({ ...user });
   }
+
+  async findById(id: string): Promise<User> {
+    return User.findByPk(id);
+  }
 }

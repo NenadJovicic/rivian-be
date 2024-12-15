@@ -1,8 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { OfficeModule } from './office/office.module';
 import { UserModule } from './user/user.module';
+import { APP_PIPE } from '@nestjs/core';
 
 const modules = [AuthModule, UserModule, OfficeModule];
 @Module({
@@ -22,5 +24,15 @@ const modules = [AuthModule, UserModule, OfficeModule];
     }),
     ...modules,
   ],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).exclude({ path: '/auth/(.*)', method: RequestMethod.ALL }).forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
