@@ -16,10 +16,10 @@ export class Queue extends Model {
   id: string;
 
   @ForeignKey(() => User)
-  @Column({ allowNull: false, field: 'user_id', unique: true })
+  @Column({ allowNull: false, field: 'user_id', unique: true, type: DataType.UUID })
   userId: string;
 
   @ForeignKey(() => Office)
-  @Column({ allowNull: false, field: 'office_id' })
+  @Column({ allowNull: false, field: 'office_id', type: DataType.UUID })
   officeId: string;
 }

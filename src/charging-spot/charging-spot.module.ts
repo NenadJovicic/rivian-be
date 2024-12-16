@@ -9,5 +9,6 @@ import { ChargingSpotService } from './charging-spot.service';
   imports: [SequelizeModule.forFeature([ChargingSpot])],
   providers: [ChargingSpotService, ChargingSpotRepository],
   controllers: [ChargingSpotController],
+  exports: [ChargingSpotService],
 })
 export class ChargingSpotModule {}

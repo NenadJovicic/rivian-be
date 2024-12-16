@@ -29,6 +29,6 @@ export class User extends Model {
   password: string;
 
   @ForeignKey(() => Office)
-  @Column({ allowNull: false, field: 'default_office_id' })
+  @Column({ allowNull: false, field: 'default_office_id', type: DataType.UUID })
   defaultOfficeId: string;
 }
