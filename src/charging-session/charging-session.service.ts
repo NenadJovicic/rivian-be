@@ -24,8 +24,8 @@ export class ChargingSessionService {
     if (freeSpots[0]) {
       return this.chargingSessionRepository.startCharging({ userId: session.userId, spotId: freeSpots[0].id });
     } else {
-      const res = await this.freeUpSlotUsedForLongerThan4Hours(session.officeId);
-      if (!res) await this.addUserToQueue(session);
+      await this.addUserToQueue(session);
+      await this.freeUpSlotUsedForLongerThan4Hours(session.officeId);
     }
   }
 
@@ -53,21 +53,14 @@ export class ChargingSessionService {
   private async startChargingSessionForUserInQueue(queue: Queue) {
     const session = await this.startCharging({ officeId: queue.officeId, userId: queue.userId });
     if (session) {
-      this.queueService.removeFromQueue(queue.id);
+      await this.queueService.removeFromQueue(queue.id);
     }
   }
 
-  /**
-   *
-   * @param officeId office for which user applied for charging spot
-   * @returns indicator is some charging spot freed up because it was used for more than 4 hours
-   */
-  private async freeUpSlotUsedForLongerThan4Hours(officeId: string): Promise<boolean> {
+  private async freeUpSlotUsedForLongerThan4Hours(officeId: string) {
     const activeSessionsForOffice = await this.chargingSessionRepository.findActiveSesssionsForOfficeLongerThan4Hours(officeId);
     if (activeSessionsForOffice.length) {
       await this.stopChargingAndAddNextFromQueue(activeSessionsForOffice[0].id);
-      return true;
     }
-    return false;
   }
 }
