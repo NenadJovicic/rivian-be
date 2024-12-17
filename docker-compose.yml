@@ -32,7 +32,7 @@ services:
       POSTGRES_DB: rivian
       JWT_SECRET: rivian-secret
       REFRESH_TOKEN_EXP: '90 days'
-      TOKEN_EXP: '6000s'
+      TOKEN_EXP: '6000s' # this long only for testing purposes in Postman, so I don't have to request new token every time
       DB_PORT: 5432
 
   rivian-db:
