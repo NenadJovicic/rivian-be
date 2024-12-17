@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { sign, verify } from 'jsonwebtoken';
 import { User } from '../entities/user.entity';
 
-interface JwtPayload {
+export interface JwtPayload {
   id: string;
 }
 

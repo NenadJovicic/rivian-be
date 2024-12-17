@@ -1,11 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { compare } from 'bcrypt';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { LoginDto } from '../dto/login.dto';
 import { UserDto } from '../dto/user.dto';
+import { User } from '../entities/user.entity';
 import { UserRepository } from '../user/user.repository';
 import { LoginValidator } from '../validators/login.validator';
-import { JwtService } from './jwt.service';
+import { JwtPayload, JwtService } from './jwt.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,19 @@ export class AuthService {
     return { token, user: new UserDto(user) };
   }
 
+  public async refreshAuthToken(req: Request, res: Response): Promise<LoginDto> {
+    const refreshToken: string = this.getRefreshTokenFromRequest(req);
+    const payload: JwtPayload = this.jwtService.verifyToken(refreshToken);
+    const user: User = await this.userRepository.findById(payload.id);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    const newRefreshToken = this.jwtService.generateRefreshToken(user);
+    this.setRefreshTokenCookie(res, newRefreshToken);
+    const newAuthToken: string = this.jwtService.generateToken(user);
+    return { token: newAuthToken, user: new UserDto(user) };
+  }
+
   private setRefreshTokenCookie(res: Response, refreshToken: string) {
     const daysInMilliseconds = 90 * 24 * 60 * 60 * 1000;
     res.cookie('refreshToken', refreshToken, {
@@ -40,5 +54,14 @@ export class AuthService {
     if (!isValidPassword) {
       throw BadRequestException.createBody({ message: 'Wrong credentials' });
     }
+  }
+
+  private getRefreshTokenFromRequest(req: Request): string {
+    const cookies = req.cookies;
+    const refreshToken: string = cookies['refreshToken'];
+    if (!refreshToken) {
+      throw new UnauthorizedException({ message: 'No token' });
+    }
+    return refreshToken;
   }
 }
