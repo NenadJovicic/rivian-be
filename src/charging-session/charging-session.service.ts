@@ -14,6 +14,10 @@ export class ChargingSessionService {
     private readonly chargingSpotService: ChargingSpotService,
   ) {}
 
+  public async getCurrentSessionForUser(userId: string): Promise<ChargingSession | null> {
+    return this.chargingSessionRepository.findActiveForUser(userId);
+  }
+
   /**
    *
    * @param session data for charging sesion
@@ -25,7 +29,7 @@ export class ChargingSessionService {
       return this.chargingSessionRepository.startCharging({ userId: session.userId, spotId: freeSpots[0].id });
     } else {
       await this.addUserToQueue(session);
-      await this.freeUpSlotUsedForLongerThan4Hours(session.officeId);
+      return this.freeUpSlotUsedForLongerThan4Hours(session.officeId);
     }
   }
 
@@ -55,12 +59,13 @@ export class ChargingSessionService {
     if (session) {
       await this.queueService.removeFromQueue(queue.id);
     }
+    return session;
   }
 
   private async freeUpSlotUsedForLongerThan4Hours(officeId: string) {
     const activeSessionsForOffice = await this.chargingSessionRepository.findActiveSesssionsForOfficeLongerThan4Hours(officeId);
     if (activeSessionsForOffice.length) {
-      await this.stopChargingAndAddNextFromQueue(activeSessionsForOffice[0].id);
+      return this.stopChargingAndAddNextFromQueue(activeSessionsForOffice[0].id);
     }
   }
 }

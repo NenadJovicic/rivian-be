@@ -1,8 +1,9 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { JwtService } from '../auth/jwt.service';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../user/user.repository';
+import { UserRequest } from './user.request';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -11,7 +12,7 @@ export class AuthMiddleware implements NestMiddleware {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async use(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async use(req: UserRequest, res: Response, next: NextFunction): Promise<void> {
     const authHeader: string = req.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedException({ message: 'Invalid authorization' });
@@ -29,6 +30,7 @@ export class AuthMiddleware implements NestMiddleware {
       if (!user) {
         throw new UnauthorizedException();
       }
+      req.userId = id;
     } catch (error) {
       throw new UnauthorizedException(error);
     }

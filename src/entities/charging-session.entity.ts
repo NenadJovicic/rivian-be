@@ -13,6 +13,12 @@ import { User } from './user.entity';
       fields: ['spot_id'],
       where: { end_time: null },
     },
+    {
+      name: 'unique_active_user',
+      unique: true,
+      fields: ['user_id'],
+      where: { end_time: null },
+    },
   ],
 })
 @Scopes(() => {

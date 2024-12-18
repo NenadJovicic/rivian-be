@@ -7,8 +7,15 @@ const fourHoursInMilliseconds = 4 * 60 * 60 * 1000;
 
 @Injectable()
 export class ChargingSessionRepository {
+  public async findActiveForUser(userId: string) {
+    return ChargingSession.scope('withSpot').findOne({
+      where: { userId, endTime: null },
+    });
+  }
+
   public async startCharging(session: Pick<ChargingSession, 'spotId' | 'userId'>): Promise<ChargingSession> {
-    return ChargingSession.create({ ...session });
+    const newSession = await ChargingSession.create({ ...session });
+    return this.findById(newSession.id);
   }
 
   public async findActiveSesssionsForOfficeLongerThan4Hours(officeId: string): Promise<ChargingSession[]> {

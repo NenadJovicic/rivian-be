@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Office } from '../entities/office.entity';
 import { OfficeValidator } from '../validators/office.validator';
 
@@ -10,5 +10,10 @@ export class OfficeController {
    */
   async addOffice(@Body() office: OfficeValidator): Promise<Office> {
     return Office.create({ ...office });
+  }
+
+  @Get()
+  async getAllOffices() {
+    return Office.findAll();
   }
 }
