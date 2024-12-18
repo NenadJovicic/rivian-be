@@ -1,15 +1,16 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { ChargingSessionModule } from './charging-session/charging-session.module';
 import { ChargingSpotModule } from './charging-spot/charging-spot.module';
 import { OfficeModule } from './office/office.module';
 import { QueueModule } from './queue/queue.module';
+import { TestDataModule } from './test-data/test-data.module';
 import { UserModule } from './user/user.module';
-import { AuthMiddleware } from './auth/auth.middleware';
 
-const modules = [AuthModule, UserModule, OfficeModule, ChargingSpotModule, ChargingSessionModule, QueueModule];
+const modules = [AuthModule, UserModule, OfficeModule, ChargingSpotModule, ChargingSessionModule, QueueModule, TestDataModule];
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -36,6 +37,10 @@ const modules = [AuthModule, UserModule, OfficeModule, ChargingSpotModule, Charg
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).exclude({ path: '/auth/(.*)', method: RequestMethod.ALL }).forRoutes({ path: '*', method: RequestMethod.ALL });
+    consumer
+      .apply(AuthMiddleware)
+      .exclude({ path: '/auth/(.*)', method: RequestMethod.ALL })
+      .exclude({ path: '/test-data', method: RequestMethod.POST })
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
