@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { ChargingSession } from '../entities/charging-session.entity';
 import { ChargingSpot } from '../entities/charging-spot.entity';
 import { ChargingSpotValidator } from '../validators/charging-spot.validator';
 import { ChargingSpotService } from './charging-spot.service';
@@ -14,7 +15,7 @@ export class ChargingSpotController {
 
   @Get('/office/:officeId')
   public async getChargingSpotsForOffice(@Param('officeId') officeId: string) {
-    return ChargingSpot.findAll({ where: { officeId } });
+    return ChargingSpot.findAll({ where: { officeId }, include: [{ model: ChargingSession, required: false, where: { endTime: null } }] });
   }
 
   @Get('free-spots-for-office/:officeId')

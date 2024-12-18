@@ -35,6 +35,16 @@ export const CHARGING_SPOTS: Partial<ChargingSpot>[] = [
     spotName: 'B1',
     officeId: '042895e6-1f70-46c3-91b0-f2458e40aba5',
   },
+  {
+    id: '2db165b1-2baf-4ee9-bf4e-849cae15ac19',
+    spotName: 'A1',
+    officeId: '042895e6-1f70-46c3-91b0-f2458e40aba5',
+  },
+  {
+    id: '2db165b1-2baf-4ee9-bf4e-849cae11af44',
+    spotName: 'Z1',
+    officeId: 'af11bfd6-f9f6-4ac4-a0f5-074e999b1016',
+  },
 ];
 
 export const OFFICES: Partial<Office>[] = [
